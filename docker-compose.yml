@@ -20,7 +20,7 @@ services:
     image: repaymentplan-service
     build: .
     ports:
-      - 8080
+      - "8089:8080"
     environment:
       - spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
       - spring.jpa.hibernate.ddl-auto=update
