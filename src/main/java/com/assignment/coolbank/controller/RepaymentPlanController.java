@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/v1")
 @Slf4j
 @RequiredArgsConstructor
 public class RepaymentPlanController {
@@ -25,6 +24,8 @@ public class RepaymentPlanController {
 
     @PostMapping("/generate-plan")
     public ResponseEntity<PaymentsResponse> generatePlan(@RequestBody @Valid final RepaymentPlanRequest request) {
+        log.info("generating repayment plan with the amount of {} and with rate of {}",
+                request.loanAmount(), request.nominalRate());
         return ResponseEntity.ok(repaymentPlanService.generatePlan(request));
     }
 }

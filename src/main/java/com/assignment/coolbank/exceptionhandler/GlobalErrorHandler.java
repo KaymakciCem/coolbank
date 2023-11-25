@@ -29,7 +29,7 @@ public class GlobalErrorHandler {
     }
 
     @ExceptionHandler(RepaymentInvalidDateException.class)
-    public ResponseEntity<String> handleMovieInfoNotfoundException(RepaymentInvalidDateException ex){
+    public ResponseEntity<String> handleMovieInfoNotFoundException(RepaymentInvalidDateException ex){
         log.error("Exception caught in handleMovieInfoNotfoundException :  {} " ,ex.getMessage(),  ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }

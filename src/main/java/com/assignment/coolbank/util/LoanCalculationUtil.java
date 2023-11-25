@@ -23,9 +23,7 @@ public class LoanCalculationUtil {
         final BigDecimal presentValueTimesPeriod = loanAmount.multiply(monthlyNominalInterestRate);
         double dividend = 1 - (Math.pow(monthlyNominalInterestRate.add(BigDecimal.ONE).doubleValue(), -durationInMonths));
 
-        final BigDecimal result = presentValueTimesPeriod.divide(BigDecimal.valueOf(dividend), SCALE, RoundingMode.HALF_EVEN);
-
-        return result;
+        return presentValueTimesPeriod.divide(BigDecimal.valueOf(dividend), SCALE, RoundingMode.HALF_EVEN);
     }
 
     public static BigDecimal calculateInterest(final BigDecimal nominalRate,

@@ -25,6 +25,7 @@ public class RepaymentPlanService {
         final LocalDate startDate = LocalDate.parse(request.startDate(), FORMATTER);
 
         if (startDate.isBefore(LocalDate.now())) {
+            log.error("Start is in the past");
             throw new RepaymentInvalidDateException("Start date must be in the future");
         }
 
@@ -38,7 +39,6 @@ public class RepaymentPlanService {
         final PaymentsResponse paymentsResponse = new PaymentsResponse();
 
         for (int i = 0; i < request.duration(); i++) {
-
             final BigDecimal interest = calculateInterest(request.nominalRate(),
                                                     initialOutstandingPrincipal);
 
