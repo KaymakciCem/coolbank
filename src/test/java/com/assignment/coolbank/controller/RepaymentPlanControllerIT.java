@@ -8,39 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.assignment.coolbank.IntegrationTestBase;
 import com.assignment.coolbank.dto.PaymentsResponse;
 import com.assignment.coolbank.dto.RepaymentPlanRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Testcontainers
 @AutoConfigureWebTestClient
-class RepaymentPlanControllerIT {
+class RepaymentPlanControllerIT extends IntegrationTestBase {
 
     @Autowired
     private WebTestClient webTestClient;
 
     static String REPAYMENT_INFO_URL = "/generate-plan";
-
-    @Container
-    static final MySQLContainer mySQLContainer = new MySQLContainer<>("mysql:8.0.30")
-            .withDatabaseName("testcontainer")
-            .withUsername("test")
-            .withPassword("test");
-
-    @DynamicPropertySource
-    static void setProperties(DynamicPropertyRegistry properties){
-        properties.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
-        properties.add("spring.datasource.username", mySQLContainer::getUsername);
-        properties.add("spring.datasource.password", mySQLContainer::getPassword);
-    }
 
     @Test
     void generatePlan() {
