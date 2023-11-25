@@ -60,7 +60,7 @@ public class RepaymentPlanService {
 
             final PaymentDetails paymentDetails = PaymentDetails.builder()
                                                                 .borrowerPaymentAmount(borrowerPaymentAmount)
-                                                                .date(LocalDate.parse(request.startDate(), FORMATTER).plusMonths(i).toString())
+                                                                .date(toPaymentDate(request.startDate(), i))
                                                                 .initialOutstandingPrincipal(initialOutstandingPrincipal.add(principal))
                                                                 .interest(interest)
                                                                 .principal(principal)
@@ -73,6 +73,11 @@ public class RepaymentPlanService {
         repository.saveAll(toPaymentPlanHistory(paymentsResponse));
 
         return paymentsResponse;
+    }
+
+    private String toPaymentDate(final String date, final int amountOfMonthsToAdd) {
+        final LocalDate localDate = LocalDate.parse(date, FORMATTER).plusMonths(amountOfMonthsToAdd);
+        return FORMATTER.format(localDate);
     }
 
     private List<RepaymentPlanHistory> toPaymentPlanHistory(final PaymentsResponse paymentsResponse) {
