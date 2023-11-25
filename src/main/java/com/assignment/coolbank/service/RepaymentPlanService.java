@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,17 +18,16 @@ import com.assignment.coolbank.exception.RepaymentInvalidDateException;
 import com.assignment.coolbank.repository.RepaymentPlanHistoryRepository;
 import com.assignment.coolbank.util.LoanCalculationUtil;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class RepaymentPlanService {
-
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     private final RepaymentPlanHistoryRepository repository;
+
+    public RepaymentPlanService(final RepaymentPlanHistoryRepository repository) {
+        this.repository = repository;
+    }
 
     @Transactional
     public PaymentsResponse generatePlan(final RepaymentPlanRequest request) {
@@ -45,7 +45,7 @@ public class RepaymentPlanService {
         BigDecimal principal = BigDecimal.ZERO;
         BigDecimal initialOutstandingPrincipal = request.loanAmount().subtract(principal);
         BigDecimal remainingOutstandingPrincipal;
-        final PaymentsResponse paymentsResponse = new PaymentsResponse();
+        final PaymentsResponse paymentsResponse = new PaymentsResponse(new ArrayList<>());
 
         for (int i = 0; i < request.duration(); i++) {
             final BigDecimal interest = calculateInterest(request.nominalRate(),
@@ -58,16 +58,14 @@ public class RepaymentPlanService {
             remainingOutstandingPrincipal = initialOutstandingPrincipal.subtract(principal);
             initialOutstandingPrincipal = initialOutstandingPrincipal.subtract(principal);
 
-            final PaymentDetails paymentDetails = PaymentDetails.builder()
-                                                                .borrowerPaymentAmount(borrowerPaymentAmount)
-                                                                .date(toPaymentDate(request.startDate(), i))
-                                                                .initialOutstandingPrincipal(initialOutstandingPrincipal.add(principal))
-                                                                .interest(interest)
-                                                                .principal(principal)
-                                                                .remainingOutstandingPrincipal(remainingOutstandingPrincipal)
-                                                                .build();
+            final PaymentDetails paymentDetails = new PaymentDetails(borrowerPaymentAmount,
+                    toPaymentDate(request.startDate(), i),
+                    initialOutstandingPrincipal.add(principal),
+                    interest,
+                    principal,
+                    remainingOutstandingPrincipal);
 
-            paymentsResponse.getBorrowerPayments().add(paymentDetails);
+            paymentsResponse.borrowerPayments().add(paymentDetails);
         }
 
         repository.saveAll(toPaymentPlanHistory(paymentsResponse));
@@ -83,15 +81,15 @@ public class RepaymentPlanService {
     private List<RepaymentPlanHistory> toPaymentPlanHistory(final PaymentsResponse paymentsResponse) {
         final List<RepaymentPlanHistory> dataList = new ArrayList<>();
 
-        paymentsResponse.getBorrowerPayments()
+        paymentsResponse.borrowerPayments()
                         .forEach(c-> {
                             final RepaymentPlanHistory repaymentPlanHistory = new RepaymentPlanHistory();
-                            repaymentPlanHistory.setDate(c.getDate());
-                            repaymentPlanHistory.setPrincipal(c.getPrincipal());
-                            repaymentPlanHistory.setInterest(c.getInterest());
-                            repaymentPlanHistory.setBorrowerPaymentAmount(c.getBorrowerPaymentAmount());
-                            repaymentPlanHistory.setInitialOutstandingPrincipal(c.getInitialOutstandingPrincipal());
-                            repaymentPlanHistory.setRemainingOutstandingPrincipal(c.getRemainingOutstandingPrincipal());
+                            repaymentPlanHistory.setDate(c.date());
+                            repaymentPlanHistory.setPrincipal(c.principal());
+                            repaymentPlanHistory.setInterest(c.interest());
+                            repaymentPlanHistory.setBorrowerPaymentAmount(c.borrowerPaymentAmount());
+                            repaymentPlanHistory.setInitialOutstandingPrincipal(c.initialOutstandingPrincipal());
+                            repaymentPlanHistory.setRemainingOutstandingPrincipal(c.remainingOutstandingPrincipal());
                             dataList.add(repaymentPlanHistory);
                         });
 

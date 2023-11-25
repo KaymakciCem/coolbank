@@ -1,5 +1,6 @@
 package com.assignment.coolbank.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,15 +11,16 @@ import com.assignment.coolbank.dto.RepaymentPlanRequest;
 import com.assignment.coolbank.service.RepaymentPlanService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequiredArgsConstructor
 public class RepaymentPlanController {
 
     private final RepaymentPlanService repaymentPlanService;
+
+    public RepaymentPlanController(final RepaymentPlanService repaymentPlanService) {
+        this.repaymentPlanService = repaymentPlanService;
+    }
 
     @PostMapping("/generate-plan")
     public ResponseEntity<PaymentsResponse> generatePlan(@RequestBody @Valid final RepaymentPlanRequest request) {

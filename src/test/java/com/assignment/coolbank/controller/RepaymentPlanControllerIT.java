@@ -25,7 +25,7 @@ class RepaymentPlanControllerIT extends IntegrationTestBase {
     static String REPAYMENT_INFO_URL = "/generate-plan";
 
     @Test
-    void generatePlan() {
+    void should_generatePlan() {
 
         var repaymentPlan = new RepaymentPlanRequest(24, BigDecimal.valueOf(5), BigDecimal.valueOf(5000), "01-01-2024");
 
@@ -39,7 +39,26 @@ class RepaymentPlanControllerIT extends IntegrationTestBase {
                 .expectBody(PaymentsResponse.class)
                 .consumeWith(paymentResponseExchangeResult -> {
                     var paymentResult = paymentResponseExchangeResult.getResponseBody();
-                    assert Objects.requireNonNull(paymentResult).getBorrowerPayments() != null;
+                    assert Objects.requireNonNull(paymentResult).borrowerPayments() != null;
+                });
+    }
+
+    @Test
+    void should_fail_bad_request() {
+
+        var repaymentPlan = new RepaymentPlanRequest(24, BigDecimal.valueOf(5), BigDecimal.valueOf(5000), "01-01-2024");
+
+        webTestClient
+                .post()
+                .uri(REPAYMENT_INFO_URL)
+                .bodyValue(repaymentPlan)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(PaymentsResponse.class)
+                .consumeWith(paymentResponseExchangeResult -> {
+                    var paymentResult = paymentResponseExchangeResult.getResponseBody();
+                    assert Objects.requireNonNull(paymentResult).borrowerPayments() != null;
                 });
     }
 }
