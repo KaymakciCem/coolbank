@@ -11,7 +11,6 @@ spring:
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:password}
     driver-class-name: com.mysql.jdbc.Driver
-
 management:
   endpoints:
     web:
