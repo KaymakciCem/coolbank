@@ -1,4 +1,4 @@
-FROM openjdk
+FROM openjdk:17
 
 VOLUME /tmp
 

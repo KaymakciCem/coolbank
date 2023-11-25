@@ -9,3 +9,13 @@ management:
       show-details: always
       probes:
         enabled: true
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    hikari:
+      password: password
+      username: repayment-user
+      jdbc-url: jdbc:mysql://localhost:3306/repaymentplan
