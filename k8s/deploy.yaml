@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: repaymentplan-service
+  labels:
+    app: repaymentplan-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: repaymentplan-service
+  template:
+    metadata:
+      name: repaymentplan-service
+      labels:
+        app: repaymentplan-service
+    spec:
+      containers:
+        - name: repaymentplan-service
+          image: goceefake/repaymentplan-service
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memoryLimit: "512Mi"
+              cpu: "0.5"
+            limits:
+              memoryLimit: "512Mi"
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/liveness
+            initialDelaySeconds: 10
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/readiness
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: local-microservice
+      restartPolicy: Always
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: repaymentplan-service
+spec:
+  selector:
+    app: repaymentplan-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: NodePort

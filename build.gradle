@@ -28,7 +28,7 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.2.0'
-    implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.10.5'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
