@@ -5,19 +5,20 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.assignment.coolbank.dto.RepaymentPlanRequest;
+import com.assignment.coolbank.repository.RepaymentPlanHistoryRepository;
 
 @ExtendWith(MockitoExtension.class)
 class RepaymentPlanServiceTest {
+    @Mock
+    private RepaymentPlanHistoryRepository repository;
 
+    @InjectMocks
     private RepaymentPlanService repaymentPlanService;
-
-    @BeforeEach
-    void setUp() {
-        repaymentPlanService = new RepaymentPlanService();
-    }
 
     @Test
     void generatePlan_principal_amount_does_not_exceed_initialOutstandingPrincipal() {
