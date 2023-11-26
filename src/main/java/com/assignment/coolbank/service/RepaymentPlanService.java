@@ -67,8 +67,9 @@ public class RepaymentPlanService {
 
             paymentsResponse.borrowerPayments().add(paymentDetails);
         }
-
+        
         repository.saveAll(toPaymentPlanHistory(paymentsResponse));
+        log.info("repayment plan generated.");
 
         return paymentsResponse;
     }
