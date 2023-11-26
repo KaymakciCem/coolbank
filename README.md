@@ -48,12 +48,9 @@ to run the project
 to stop the project
  - docker-compose down
 
-### explicitly building docker image
-docker build -t repaymentplan-service .
-
-### explicitly run docker image
-docker-compose up --build
-
+### explicitly building docker images
+ - docker build -t repaymentplan-service .
+ - docker run -p 3307:3306 --name mysqldb -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=repaymentplan mysql:latest
 
 ### API DOCUMENTATION (Swagger)
 
